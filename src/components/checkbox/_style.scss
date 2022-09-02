@@ -1,0 +1,10 @@
+.checkbox {
+    width: 20px;
+    height: 20px;
+    transition-duration: 0.2s;
+    cursor: pointer;
+    margin: 0 10px;
+    &:hover {
+        box-shadow: 3px 0px 1.4em rgb(233, 233, 233), -3px 0 1.4em rgb(233, 233, 233);
+    }
+}

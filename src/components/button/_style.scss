@@ -1,0 +1,27 @@
+$green: #43a85d;
+$white: #fff;
+
+@mixin background-and-color($back, $col) {
+    background: $back;
+    color: $col;
+}
+
+.wrapperButton {
+    @include background-and-color($green, $white);
+    border-radius: 15px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: 5px;
+    font-size: 20px;
+    transition-duration: 0.2s;
+    cursor: pointer;
+    font-weight: bold;
+    &:hover {
+        @include background-and-color($white, $green);
+    };
+    &:active {
+        @include background-and-color($green, $white);
+        box-shadow: 3px 0px 1.4em rgba(0, 0, 0, 0.20) inset, -3px 0 1.4em rgba(0, 0, 0, 0.20) inset;
+    };
+}
