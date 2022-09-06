@@ -1,13 +1,12 @@
 import React, { FC } from 'react'
 
-import { RootState } from '../../store'
 import { TodoItem } from './TodoItem'
 import { useAppSelector } from '../../hooks/hooks'
 
 import './_style.scss'
 
 export const TodoList: FC = () => {
-    const todos = useAppSelector((state: RootState) => state.todos.todos)
+    const todos = useAppSelector(state => state.todos.todos)
 
     return (
         <div className="wrapperTodoList">

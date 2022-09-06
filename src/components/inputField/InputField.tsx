@@ -1,6 +1,6 @@
-import React, { Dispatch, FC, SetStateAction, useCallback } from 'react'
+import React, { Dispatch, FC, SetStateAction, useCallback, useEffect } from 'react'
 
-import { onSetTodo } from './../../store/todoSlice'
+import { fetchTodos, addTodo } from './../../store/todoSlice'
 import { Button } from '../button/Button'
 import { Input } from '../input/Input'
 import { useAppDispatch } from '../../hooks/hooks';
@@ -14,12 +14,18 @@ type Props = {
 
 export const InputField: FC<Props> = ({ text, setText }) => {
     const dispatch = useAppDispatch()
-
+    
     const addTask = useCallback(() => {
-        dispatch(onSetTodo(text))
-        setText('')
+        if (text.trim().length) {
+            dispatch(addTodo(text))
+            setText('')
+        }
     }, [dispatch, text, setText])
     
+    useEffect(() => {
+        dispatch(fetchTodos())
+    }, [dispatch])
+
     return (
         <div className="wrapperInputButton">
             <Input

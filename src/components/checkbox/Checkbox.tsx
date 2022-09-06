@@ -1,6 +1,6 @@
 import React, { FC, useCallback } from 'react'
 
-import { togleTodoComplete } from './../../store/todoSlice'
+import { toggleStatus } from './../../store/todoSlice'
 import { ITodo } from '../../interface/ITodo'
 import { useAppDispatch } from '../../hooks/hooks'
 
@@ -14,7 +14,7 @@ export const Checkbox: FC<Props> = ({ todo }) => {
     const dispatch = useAppDispatch()
 
     const onCheck = useCallback(() => 
-        dispatch(togleTodoComplete(todo.id))
+        dispatch(toggleStatus(todo.id))
     , [dispatch, todo.id]) 
 
     return (
