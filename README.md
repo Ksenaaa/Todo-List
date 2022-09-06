@@ -2,7 +2,7 @@
 
 ### React
 
-### Redax toolkit
+### Redax toolkit (Async)
 
 ### Typescript
 
