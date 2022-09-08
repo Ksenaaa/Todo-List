@@ -4,11 +4,12 @@ import './_style.scss'
 
 type Props = {
     nameButton: string,
-    onClick: () => void,
+    clickButton: () => void,
+    disabled?: boolean,
 }
 
-export const Button: FC<Props> = ({ nameButton, onClick }) => (
-    <div className="wrapperButton" onClick={onClick}>
+export const Button: FC<Props> = ({ nameButton, clickButton, disabled }) => (
+    <div className={disabled ? "wrapperButton is-disabled" :"wrapperButton"} onClick={clickButton}>
         {nameButton}
     </div>
 )

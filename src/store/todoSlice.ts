@@ -3,13 +3,17 @@ import { createSlice, PayloadAction, createAsyncThunk, AnyAction } from '@reduxj
 import { ITodo } from '../interface/ITodo';
 
 type TodosState = {
+    past: ITodo[][],
     todos: ITodo[],
+    future: ITodo[][],
     loading: boolean,
     error: null | string,
 }
 
 const initialState: TodosState = {
+    past: [],
     todos: [],
+    future: [],
     loading: false,
     error: null,
 }
@@ -17,7 +21,7 @@ const initialState: TodosState = {
 export const fetchTodos = createAsyncThunk<ITodo[], undefined, { rejectValue: string }>(
     'todos/fetchTodos',
     async function(_, { rejectWithValue }) {
-        const response = await fetch('https://jsonplaceholder.typicode.com/todos')
+        const response = await fetch('https://jsonplaceholder.typicode.com/todos?_limit=10')
 
         if (!response.ok) {
             return rejectWithValue('Server Error!')
@@ -96,7 +100,20 @@ export const deleteTodo = createAsyncThunk<string, string, { rejectValue: string
 const todoSlice = createSlice({
     name: 'todos',
     initialState,
-    reducers: {},
+    reducers: {
+        undoHistory(state) {
+            const { past, todos, future } = state
+            state.past = past.slice(0, past.length - 1)
+            state.todos = past[past.length - 1]
+            state.future = [todos, ...future]
+        },
+        redoHistory(state) {
+            const { past, todos, future } = state
+            state.past = [...past, todos]
+            state.todos = future[0]
+            state.future = future.slice(1)
+        },
+    },
     extraReducers: builder => {
         builder
             .addCase(fetchTodos.pending, (state) => {
@@ -111,14 +128,25 @@ const todoSlice = createSlice({
                 state.error = null      
             })
             .addCase(addTodo.fulfilled, (state, action) => {
-                state.todos.push(action.payload)
+                state.past = [...state.past, state.todos]
+                state.todos = [...state.todos, action.payload]
+                state.future = []   
             })
             .addCase(toggleStatus.fulfilled, (state, action) => {
-                const toggledTodo = state.todos.find(todo => todo.id === action.payload.id)
-                toggledTodo && (toggledTodo.completed = !toggledTodo.completed)
+                state.past = [...state.past, state.todos]
+                state.todos = state.todos.map(todo => {
+                    if (todo.id === action.payload.id) {
+                        return { ...todo, completed: !todo.completed }
+                    }
+                    
+                    return todo
+                })
+                state.future = []  
             })
             .addCase(deleteTodo.fulfilled, (state, action) => {
+                state.past = [...state.past, state.todos]
                 state.todos = state.todos.filter(todo => todo.id !== action.payload)
+                state.future = []  
             })
             .addMatcher(isError, (state, action: PayloadAction<string>) => {
                 state.loading = false
@@ -130,5 +158,7 @@ const todoSlice = createSlice({
 function isError(action: AnyAction) {
     return action.type.endsWith('rejected')
 }
+
+export const { undoHistory, redoHistory } = todoSlice.actions
 
 export default todoSlice.reducer
