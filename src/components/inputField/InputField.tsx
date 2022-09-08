@@ -15,12 +15,14 @@ type Props = {
 export const InputField: FC<Props> = ({ text, setText }) => {
     const dispatch = useAppDispatch()
     
+    const canAdd = text.trim().length > 0
+    
     const addTask = useCallback(() => {
-        if (text.trim().length) {
+        if (canAdd) {
             dispatch(addTodo(text))
             setText('')
         }
-    }, [dispatch, text, setText])
+    }, [dispatch, text, setText, canAdd])
     
     useEffect(() => {
         dispatch(fetchTodos())
@@ -34,7 +36,8 @@ export const InputField: FC<Props> = ({ text, setText }) => {
             />
             <Button
                 nameButton='Add todo' 
-                onClick={addTask}
+                clickButton={addTask}
+                disabled={!canAdd}
             />
         </div>
     )
